@@ -1,0 +1,26 @@
+name: MacOS CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['**']
+
+jobs:
+  build_and_test_macos:
+    name: 'Check if BlazingMQ can build and pass unit tests on MacOS'
+    runs-on: flyci-macos-large-latest-m1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up dependencies and build
+        run: |
+          ./bin/build-darwin.sh
+          cmake --build build/blazingmq -j --target all all.t
+      - name: Run Unit Tests
+        run: |
+          ctest -E mwcsys_executil.t --output-on-failure
+        working-directory: build/blazingmq
+      - uses: actions/cache@v3
+        with:
+          path: |
+            build/blazingmq
+          key: cache-macos-${{ github.sha }}
