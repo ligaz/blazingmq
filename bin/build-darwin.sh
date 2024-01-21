@@ -24,6 +24,9 @@ if [ ! -f "$script_path" ] || [ "$(realpath "$0")" != "$(realpath "$script_path"
     exit 1
 fi
 
+# Build other dependencies
+brew install ninja flex bison google-benchmark zlib
+
 # :: Set some initial constants :::::::::::::::::::::::::::::::::::::::::::::::
 DIR_ROOT="$(pwd)"
 
@@ -79,10 +82,6 @@ if [ ! -e "${DIR_BUILD}/ntf/.complete" ]; then
     popd
     touch "${DIR_BUILD}/ntf/.complete"
 fi
-
-
-# Build other dependencies
-brew install flex bison google-benchmark zlib
 
 # Determine paths based on Intel vs Apple Silicon CPU
 if [ "$(uname -p)" == 'arm' ]; then
